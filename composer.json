@@ -1,0 +1,17 @@
+{
+    "name": "daggerhart/archidekt",
+    "autoload": {
+        "psr-4": {
+            "Archidekt\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Jonathan Daggerhart",
+            "email": "jonathan@daggerhartlab.com"
+        }
+    ],
+    "require-dev": {
+        "symfony/var-dumper": "^5.4"
+    }
+}
