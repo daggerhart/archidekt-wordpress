@@ -6,35 +6,24 @@ use Archidekt\Model\ApiObjectBase;
 
 /**
  * Represents the oracle version of a card.
- * 
- * @method int id() Card id.
- * @method string name() Card name.
- * @method int cmc() Card cmc.
- * @method string[] colorIdentity()
- * @method string[] colors()
- * @method array faces() Card faces.
- * @method string layout() Card layout.
- * @method string manaCode() Card mana cost.
- * @method array manaProduction() Keyed array of the mana this card can produce.
- * @method string power() Creature power.
- * @method float salt() Saltiness of card.
- * @method string[] subTypes() List of card's subtypes.
- * @method string[] superTypes() List of card's supertypes.
- * @method string text() Card text.
- * @method array tokens() List of token ids this card produces.
- * @method string toughness() Creature toughness.
- * @method string[] types() Card types.
- * @method int loyalty() Number of loyalty a planeswalker has.
+ *
+ * @property int $id Card id.
+ * @property string $name Card name.
+ * @property int $cmc Card cmc.
+ * @property string[] $colorIdentity
+ * @property string[] $colors
+ * @property array $faces Card faces.
+ * @property string $layout Card layout.
+ * @property string $manaCode Card mana cost.
+ * @property array $manaProduction Keyed array of the mana this card can produce.
+ * @property string $power Creature power.
+ * @property float $salt Saltiness of card.
+ * @property string[] $subTypes List of card's subtypes.
+ * @property string[] $superTypes List of card's supertypes.
+ * @property string $text Card text.
+ * @property array $tokens List of token ids this card produces.
+ * @property string $toughness Creature toughness.
+ * @property string[] $types Card types.
+ * @property int $loyalty Number of loyalty a planeswalker has.
  */
-class CardOracle extends ApiObjectBase {
-
-  /**
-   * Alias for cmc().
-   * 
-   * @return int
-   */
-  public function mv() {
-    return $this->cmc();
-  }
-  
-}
+class CardOracle extends ApiObjectBase {}
