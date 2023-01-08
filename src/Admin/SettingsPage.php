@@ -3,6 +3,7 @@
 namespace Archidekt\Admin;
 
 use Archidekt\Model\Settings;
+use Archidekt\Service\Template;
 
 /**
  * Settings page for the plugin.
@@ -11,13 +12,28 @@ class SettingsPage {
 
 	const CAPABILITY = 'manage_options';
 
+	private Settings $settings;
+	private Template $template;
+
+	/**
+	 * @param Settings $settings
+	 * @param Template $template
+	 */
+	public function __construct(Settings $settings, Template $template) {
+		$this->settings = $settings;
+		$this->template = $template;
+	}
+
 	/**
 	 * Register the new page.
 	 *
 	 * @return void
 	 */
 	public static function register() {
-		$static = new static();
+		$static = new static(
+			Settings::instance(),
+			new Template()
+		);
 
 		add_action('admin_init', [$static, 'adminInit']);
 		add_action('admin_menu', [$static, 'adminMenu']);
@@ -94,11 +110,13 @@ class SettingsPage {
 						'callback' => 'renderCheckbox',
 						'label' => __('Cache Enabled', 'archidekt'),
 						'description' => __('Enable caching for faster site responses and to avoid rate limits on Archidekt.', 'archidekt'),
+						'value' => $this->settings->cacheEnabled,
 					],
 					'cacheLifetime' => [
 						'callback' => 'renderSelect',
 						'label' => __('Cache Lifetime', 'archidekt'),
 						'description' => __('Select how long the cache should last.', 'archidekt'),
+						'value' => $this->settings->cacheLifetime,
 						'options' => [
 							0 => __('Forever', 'archidekt'),
 							MONTH_IN_SECONDS => __('One Month', 'archidekt'),
@@ -154,19 +172,9 @@ class SettingsPage {
 	 * @return void
 	 */
 	public function renderCheckbox(array $field = []) {
-		$settings = Settings::instance();
-		$value = $settings->{$field['id']};
-		?>
-		<input type="hidden" value="0" name="archidekt_settings[<?= $field['id'] ?>]">
-		<input
-			id="<?= $field['id'] ?>"
-			name="archidekt_settings[<?= $field['id'] ?>]"
-			type="checkbox"
-			value="1"
-			<?php checked($value) ?>
-		>
-		<p class="description"><?= $field['description'] ?></p>
-		<?php
+		print $this->template->render('form/checkbox', [
+			'field' => $field,
+		]);
 	}
 
 	/**
@@ -177,18 +185,9 @@ class SettingsPage {
 	 * @return void
 	 */
 	public function renderSelect(array $field = []) {
-		$settings = Settings::instance();
-		$value = $settings->{$field['id']};
-		?>
-		<select id="<?= $field['id'] ?>" name="archidekt_settings[<?= $field['id'] ?>]">
-			<?php foreach ($field['options'] as $option_value => $option_label) { ?>
-				<option value="<?= $option_value ?>" <?php selected($option_value, $value) ?>>
-					<?= $option_label ?>
-				</option>
-			<?php } ?>
-		</select>
-		<p class="description"><?= $field['description'] ?></p>
-		<?php
+		print $this->template->render('form/select', [
+			'field' => $field,
+		]);
 	}
 
 }
