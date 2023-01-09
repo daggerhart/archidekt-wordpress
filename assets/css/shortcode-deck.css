@@ -1,0 +1,22 @@
+
+.archidekt-deck {
+	display: flex;
+	border: 1px solid #bbb;
+	padding: 6px;
+}
+.archidekt-deck .featured-image {
+
+}
+.archidekt-deck .featured-image img {
+	display: block;
+	width: 100%;
+	max-width: 100%;
+	padding: 0;
+}
+.archidekt-deck .details {
+	padding: 0 12px;
+}
+.archidekt-deck .details .name {
+	line-height: 1;
+	font-size: 1.5rem;
+}

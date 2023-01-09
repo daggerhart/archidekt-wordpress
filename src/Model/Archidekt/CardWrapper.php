@@ -25,7 +25,7 @@ class CardWrapper extends ApiObjectBase {
 	 *
 	 * @return \Archidekt\Model\Archidekt\Card
 	 */
-	public function card(): Card {
+	public function getCard(): Card {
 		return new Card($this->data['card'] ?? []);
 	}
 

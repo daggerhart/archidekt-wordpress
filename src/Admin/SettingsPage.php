@@ -4,6 +4,7 @@ namespace Archidekt\Admin;
 
 use Archidekt\Model\Settings;
 use Archidekt\Service\Template;
+use Archidekt\ServicesContainer;
 
 /**
  * Settings page for the plugin.
@@ -29,12 +30,11 @@ class SettingsPage {
 	 *
 	 * @return void
 	 */
-	public static function register() {
+	public static function register(ServicesContainer $container) {
 		$static = new static(
-			Settings::instance(),
-			new Template()
+			$container->get('settings'),
+			$container->get('template')
 		);
-
 		add_action('admin_init', [$static, 'adminInit']);
 		add_action('admin_menu', [$static, 'adminMenu']);
 	}

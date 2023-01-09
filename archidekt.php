@@ -14,6 +14,7 @@ define('ARCHIDEKT_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('ARCHIDEKT_PLUGIN_URL', plugin_dir_url(__FILE__));
 define('ARCHIDEKT_PLUGIN_FILE', __FILE__);
 define('ARCHIDEKT_DB_VERSION', 10001);
+define('ARCHIDEKT_SCRIPTS_VERSION', 10001);
 define('ARCHIDEKT_TEMPLATES_DIR', ARCHIDEKT_PLUGIN_DIR . DIRECTORY_SEPARATOR . 'templates');
 
 require_once __DIR__ . '/vendor/autoload.php';

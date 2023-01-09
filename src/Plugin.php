@@ -3,8 +3,43 @@
 namespace Archidekt;
 
 use Archidekt\Admin\SettingsPage;
+use Archidekt\Model\Settings;
+use Archidekt\Service\ApiClient;
+use Archidekt\Service\Template;
+use Archidekt\Shortcode\Deck;
 
 class Plugin {
+
+	/**
+	 * @return ServicesContainer
+	 */
+	private static function buildContainer(): ServicesContainer {
+		$container = new ServicesContainer();
+		$container->add('settings', function() {
+			return Settings::instance();
+		});
+		$container->add('api_client', function(ServicesContainer $container) {
+			/** @var Settings $settings */
+			$settings = $container->get('settings');
+			return new ApiClient($settings->cacheEnabled(), $settings->cacheLifetime());
+		});
+		$container->add('template', function() {
+			return new Template(ARCHIDEKT_TEMPLATES_DIR);
+		});
+
+		return $container;
+	}
+
+	/**
+	 * @return ServicesContainer
+	 */
+	public static function container(): ServicesContainer {
+		static $container = null;
+		if (is_null($container)) {
+			$container = static::buildContainer();
+		}
+		return $container;
+	}
 
 	/**
 	 * Init plugin.
@@ -39,8 +74,14 @@ class Plugin {
 		}
 	}
 
+	/**
+	 * Hook init.
+	 *
+	 * @return void
+	 */
 	public function init() {
-		SettingsPage::register();
+		SettingsPage::register(static::container());
+		Deck::register(static::container());
 	}
 
 }
