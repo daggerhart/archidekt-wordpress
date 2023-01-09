@@ -2,8 +2,8 @@
 /**
  * Plugin Name:       Archidekt
  * Description:       Display Archidekt information in a WordPress site.
- * Version:           0.0.1
- * Requires at least: 5.0
+ * Version:           1.0.0
+ * Requires at least: 6.0
  * Requires PHP:      7.4
  * Author:            daggerhart
  * Author URI:        https://daggerhartfarms.com

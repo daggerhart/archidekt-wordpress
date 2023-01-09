@@ -52,9 +52,10 @@ class SettingsPage {
 	 * @return void
 	 */
 	public function adminMenu() {
-		add_menu_page(
+		add_submenu_page(
+			'options-general.php',
 			'Archidekt',
-			'Archidekt Options',
+			'Archidekt Settings',
 			static::CAPABILITY,
 			'archidekt',
 			[$this, 'pageContent']
