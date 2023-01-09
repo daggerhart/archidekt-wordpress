@@ -19,34 +19,56 @@ class Template {
 	}
 
 	/**
-	 * @param string $_template_name
-	 * @param array $_context
+	 * @param string|array $template_suggestions
+	 * @param array $context
 	 *
 	 * @return string
 	 */
-	public function render(string $_template_name, array $_context = []) {
-		$_template_name = str_replace(['/', '\\'], DIRECTORY_SEPARATOR, $_template_name);
+	public function render($template_suggestions, array $context = []) {
+		if (!is_array($template_suggestions)) {
+			$template_suggestions = [$template_suggestions];
+		}
+
+		// More specific suggestions are expected later in the array.
+		$template_suggestions = array_reverse($template_suggestions);
+
+		// Format template suggestions.
+		$template_suggestions = array_map(function(string $suggestion) {
+			return str_replace(['/', '\\'], DIRECTORY_SEPARATOR, $suggestion);
+		}, $template_suggestions);
 
 		// Look for template overridden by theme.
-		$_found_template = locate_template($_template_name, false);
+		$_found_template = locate_template($template_suggestions, false);
 		if ($_found_template) {
 			ob_start();
-			get_template_part($_template_name, NULL, $_context);
+			get_template_part($_found_template, null, $context);
 			return ob_get_clean();
 		}
 
 		// Fallback to the default template in this plugin.
-		$_default_template_file = $this->folder . DIRECTORY_SEPARATOR . $_template_name . '.php';
-		if (!file_exists($_default_template_file)) {
-			return "<!-- template {$_template_name} not found -->";
+		$found_template_file = false;
+		foreach ($template_suggestions as $suggestion) {
+			$template_file = $this->folder . DIRECTORY_SEPARATOR . $suggestion . '.php';
+			if (file_exists($template_file)) {
+				$found_template_file = $template_file;
+				break;
+			}
 		}
 
-		ob_start();
-		foreach ($_context as $key => $value) {
-			${$key} = $value;
+		if (!$found_template_file) {
+			return "<!-- Template suggestions not found. " . implode(', ', $template_suggestions) . "-->";
 		}
-		include $_default_template_file;
-		return ob_get_clean();
+
+		// Render in a clean context.
+		return (function() {
+			ob_start();
+			foreach (func_get_args()[1] as $key => $value) {
+				${$key} = $value;
+			}
+			unset($key, $value);
+			include func_get_args()[0];
+			return ob_get_clean();
+		})($found_template_file, $context);
 	}
 
 }

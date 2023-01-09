@@ -58,13 +58,13 @@ class Deck {
 	public function shortcode(array $attributes = []) {
 		$attributes = wp_parse_args($attributes, [
 			'id' => NULL,
-			'mode' => 'default',
+			'mode' => 'summary',
 		]);
 
 		$deck = $this->client->getDeck($attributes['id']);
 
 		wp_enqueue_style('archidekt-shortcode-deck');
-		return $this->template->render('deck/deck--default', [
+		return $this->template->render('deck/deck--' . $attributes['mode'], [
 			'deck' => $deck,
 		]);
 	}

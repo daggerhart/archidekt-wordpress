@@ -3,7 +3,7 @@
  * @var \Archidekt\Model\Archidekt\Deck $deck
  */
 ?>
-<div class="archidekt-deck mode-default">
+<div class="archidekt-deck mode-summary">
 	<div class="featured-image">
 		<img src="<?= $deck->featured ?>" alt="<?= esc_attr($deck->name) ?> featured image">
 	</div>
