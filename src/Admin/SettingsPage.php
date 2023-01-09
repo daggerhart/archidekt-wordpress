@@ -13,7 +13,14 @@ class SettingsPage {
 
 	const CAPABILITY = 'manage_options';
 
+	/**
+	 * @var Settings
+	 */
 	private Settings $settings;
+
+	/**
+	 * @var Template
+	 */
 	private Template $template;
 
 	/**
@@ -58,33 +65,23 @@ class SettingsPage {
 	 * Top level menu callback function
 	 */
 	function pageContent() {
-		// check user capabilities
-		if ( ! current_user_can( static::CAPABILITY ) ) {
+		if (!current_user_can(static::CAPABILITY)) {
 			return;
 		}
 
-		// add error/update messages
-
-		// check if the user have submitted the settings
-		// WordPress will add the "settings-updated" $_GET parameter to the url
-		if ( isset( $_GET['settings-updated'] ) ) {
-			// add settings saved message with the class of "updated"
-			add_settings_error( 'archidekt_messages', 'archidekt_message', __( 'Settings Saved', 'archidekt' ), 'updated' );
+		if (isset($_GET['settings-updated'])) {
+			add_settings_error('archidekt_messages', 'archidekt_message', __( 'Settings Saved', 'archidekt' ), 'updated');
 		}
 
-		// show error/update messages
+		// Show error/update messages.
 		settings_errors( 'archidekt_messages' );
 		?>
 		<div class="wrap">
 			<h1><?php echo esc_html( get_admin_page_title() ); ?></h1>
 			<form action="options.php" method="post">
 				<?php
-				// output security fields for the registered setting "archidekt"
 				settings_fields( 'archidekt' );
-				// output setting sections and their fields
-				// (sections are registered for "archidekt", each field is registered to a specific section)
 				do_settings_sections( 'archidekt' );
-				// output save settings button
 				submit_button( 'Save Settings' );
 				?>
 			</form>
@@ -98,13 +95,13 @@ class SettingsPage {
 	 * @return void
 	 */
 	public function adminInit() {
-		// Register a new setting for "archidekt" page.
 		register_setting( 'archidekt', 'archidekt_settings' );
 
 		$sections = [
 			'archidekt_section_cache' => [
 				'label' => __( 'Cache Settings', 'archidekt' ),
-				'description_callback' => [$this, 'cacheSectionDescription'],
+				'description_callback' => [$this, 'renderSectionDescription' ],
+				'description' => __( 'It is greatly encouraged to cache decks for as long as possible to avoid Archidekt rate limits.', 'archidekt' ),
 				'fields' => [
 					'cacheEnabled' => [
 						'callback' => 'renderCheckbox',
@@ -129,12 +126,15 @@ class SettingsPage {
 		];
 
 		foreach ($sections as $section_id => $section) {
+			$section['id'] = $section_id;
+
 			// Add sections.
 			add_settings_section(
 				$section_id,
 				$section['label'],
 				$section['description_callback'],
-				'archidekt'
+				'archidekt',
+				$section,
 			);
 
 			// Add fields.
@@ -154,13 +154,13 @@ class SettingsPage {
 	}
 
 	/**
-	 * Developers section callback function.
+	 * Section description callback function.
 	 *
-	 * @param array $args  The settings array, defining title, id, callback.
+	 * @param array $section The settings array, defining title, id, callback.
 	 */
-	public function cacheSectionDescription(array $args = []) {
+	public function renderSectionDescription(array $section = []) {
 		?>
-		<p id="<?php echo esc_attr( $args['id'] ); ?>"><?php esc_html_e( 'It is greatly encouraged to cache decks for as long as possible to avoid Archidekt rate limits.', 'archidekt' ); ?></p>
+		<p id="<?= esc_attr( $section['id'] ); ?>"><?= $section['description']; ?></p>
 		<?php
 	}
 
