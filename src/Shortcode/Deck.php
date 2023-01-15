@@ -6,6 +6,9 @@ use Archidekt\Service\ApiClient;
 use Archidekt\Service\Template;
 use Archidekt\ServicesContainer;
 
+/**
+ * Shortcode for displaying a deck.
+ */
 class Deck {
 
 	const TAG = 'deck';
@@ -55,16 +58,23 @@ class Deck {
 	 *
 	 * @return string
 	 */
-	public function shortcode(array $attributes = []) {
+	public function shortcode(array $attributes = []): string {
 		$attributes = wp_parse_args($attributes, [
 			'id' => NULL,
 			'mode' => 'summary',
 		]);
 
-		$deck = $this->client->getDeck($attributes['id']);
-
 		wp_enqueue_style('archidekt-shortcode-deck');
-		return $this->template->render('deck/deck--' . $attributes['mode'], [
+
+		$deck = $this->client->getDeck($attributes['id']);
+		$suggestions = [
+			// Default to the summary if the given mode doesn't exist.
+			'deck/deck--summary',
+			// More specific suggestions later in the array.
+			'deck/deck--' . $attributes['mode'],
+		];
+
+		return $this->template->render($suggestions, [
 			'deck' => $deck,
 			'deck_id' => $attributes['id'],
 			'view_mode' => $attributes['mode'],

@@ -5,6 +5,8 @@ namespace Archidekt\Model\Archidekt;
 use Archidekt\Model\ApiObjectBase;
 
 /**
+ * Represents a gameplay face of a magic card.
+ *
  * @property array $colors
  * @property string $flavor Flavor text.
  * @property string $manaCost Encoded mana cost.

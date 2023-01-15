@@ -5,7 +5,7 @@ namespace Archidekt\Model\Archidekt;
 use Archidekt\Model\ApiObjectBase;
 
 /**
- * This object represents the Archideck data for a card in a deck. It contains
+ * This object represents the Archidekt data for a card in a deck. It contains
  * a Card object that has many of the card's details.
  *
  * @property int $id

@@ -2,6 +2,9 @@
 
 namespace Archidekt\Service;
 
+/**
+ * Simple rendering class.
+ */
 class Template {
 
 	/**
@@ -24,7 +27,7 @@ class Template {
 	 *
 	 * @return string
 	 */
-	public function render($template_suggestions, array $context = []) {
+	public function render($template_suggestions, array $context = []): string {
 		if (!is_array($template_suggestions)) {
 			$template_suggestions = [$template_suggestions];
 		}

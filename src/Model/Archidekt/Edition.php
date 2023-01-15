@@ -5,6 +5,8 @@ namespace Archidekt\Model\Archidekt;
 use Archidekt\Model\ApiObjectBase;
 
 /**
+ * Represents a card edition (or set).
+ *
  * @property string $editioncode Set code.
  * @property string $editionname Set name.
  * @property string $editiondate Set release date.

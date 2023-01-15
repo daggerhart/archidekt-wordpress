@@ -5,6 +5,8 @@ namespace Archidekt\Model\Archidekt;
 use Archidekt\Model\ApiObjectBase;
 
 /**
+ * Represents a specific printing of a card.
+ *
  * @property int $id Card id.
  * @property string $artist Artist name.
  * @property int $tcgProductId TCG Player product id.

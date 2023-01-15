@@ -5,6 +5,8 @@ namespace Archidekt\Model\Archidekt;
 use Archidekt\Model\ApiObjectBase;
 
 /**
+ * Represents an Archidekt deck category. May be populated with cards in that category.
+ *
  * @property int $id Category id.
  * @property string $name Category name.
  * @property bool $includedInDeck Whether the category is included in the deck.

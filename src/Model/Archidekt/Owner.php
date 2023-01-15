@@ -5,6 +5,8 @@ namespace Archidekt\Model\Archidekt;
 use Archidekt\Model\ApiObjectBase;
 
 /**
+ * Represents an Archidekt user that owns the deck.
+ *
  * @property int $id The user id.
  * @property string $username The user's name.
  * @property string $avatar URL to the user's avatar.
