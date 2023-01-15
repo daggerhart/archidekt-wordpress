@@ -66,6 +66,8 @@ class Deck {
 		wp_enqueue_style('archidekt-shortcode-deck');
 		return $this->template->render('deck/deck--' . $attributes['mode'], [
 			'deck' => $deck,
+			'deck_id' => $attributes['id'],
+			'view_mode' => $attributes['mode'],
 		]);
 	}
 

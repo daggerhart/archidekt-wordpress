@@ -4,9 +4,7 @@
 	border: 1px solid #bbb;
 	padding: 6px;
 }
-.archidekt-deck .featured-image {
-
-}
+.archidekt-deck .featured-image {}
 .archidekt-deck .featured-image img {
 	display: block;
 	width: 100%;

@@ -20,3 +20,20 @@
 		<div class="salt-sum">Salt Sum: <?= $deck->getSaltSum() ?></div>
 	</div>
 </div>
+<?php
+foreach ($deck->getCategoriesWithCards() as $category)
+{
+	if (!$category->hasCards()) {
+		continue;
+	}
+	?>
+	<div class="archidekt-category">
+		<div class="category-name"><?= $category->name ?></div>
+		<ul class="category-cards">
+			<?php foreach ($category->getCards() as $card) { ?>
+				<li><?= $card->getCardGameplay()->name ?></li>
+			<?php } ?>
+		</ul>
+	</div>
+	<?php
+}

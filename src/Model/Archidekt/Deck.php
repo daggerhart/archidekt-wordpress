@@ -124,6 +124,15 @@ class Deck extends ApiObjectBase {
 	}
 
 	/**
+	 * Number of cards in the deck.
+	 *
+	 * @return int
+	 */
+	public function getCardCount(): int {
+		return count($this->getCards());
+	}
+
+	/**
 	 * Get category objects in this deck.
 	 *
 	 * @return Category[]
@@ -133,9 +142,47 @@ class Deck extends ApiObjectBase {
 			$this->categoryObjects = array_map(function($card) {
 				return new Category($card);
 			}, $this->data['categories'] ?? []);
+
+			// Sort alphabetically by default.
+			usort($this->categoryObjects, function($a, $b) {
+				/**
+				 * @var $a Category
+				 * @var $b Category
+				 */
+				if ($a->isPremier) {
+					return -1;
+				}
+				if ($b->isPremier) {
+					return 1;
+				}
+
+				return $a->name <=> $b->name;
+			});
 		}
 
 		return $this->categoryObjects;
+	}
+
+	/**
+	 * Get categories populated with cards in the category.
+	 *
+	 * @return Category[]
+	 */
+	public function getCategoriesWithCards(): array {
+		$categories = $this->getCategories();
+		$cards = $this->getCards();
+
+		foreach ($categories as $category) {
+			$category_cards = [];
+			foreach ($cards as $card) {
+				if (in_array($category->name, $card->categories)) {
+					$category_cards[] = $card;
+				}
+			}
+			$category->setCards($category_cards);
+		}
+
+		return $categories;
 	}
 
 	/**
