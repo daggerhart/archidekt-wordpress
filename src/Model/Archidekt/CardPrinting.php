@@ -25,7 +25,40 @@ use Archidekt\Model\ApiObjectBase;
  * @property array $prices
  * @property string $rarity
  */
-class Card extends ApiObjectBase {
+class CardPrinting extends ApiObjectBase {
+
+	/**
+	 * Parent deck meta object.
+	 *
+	 * @var CardDeckMeta|null
+	 */
+	protected ?CardDeckMeta $parentCardDeckMeta = null;
+
+	/**
+	 * Runtime cache of gameplay card object.
+	 *
+	 * @var CardGameplay|null
+	 */
+	protected ?CardGameplay $cardGameplay = null;
+
+	/**
+	 * @param CardDeckMeta $card_deck_meta
+	 *
+	 * @return $this
+	 */
+	public function setParent(CardDeckMeta $card_deck_meta): CardPrinting {
+		$this->parentCardDeckMeta = $card_deck_meta;
+		return $this;
+	}
+
+	/**
+	 * Get the Archidekt meta object for this card printing.
+	 *
+	 * @return CardDeckMeta|null
+	 */
+	public function getParentCardDeckMeta(): ?CardDeckMeta {
+		return $this->parentCardDeckMeta;
+	}
 
 	/**
 	 * Get the card set details.
@@ -49,12 +82,26 @@ class Card extends ApiObjectBase {
 	}
 
 	/**
-	 * Get oracle card object.
+	 * Get gameplay card object.
 	 *
-	 * @return \Archidekt\Model\Archidekt\CardOracle
+	 * @return \Archidekt\Model\Archidekt\CardGameplay|null
 	 */
-	public function getOracleCard(): CardOracle {
-		return new CardOracle($this->oracleCard);
+	public function getCardGameplay(): ?CardGameplay {
+		if (!$this->cardGameplay) {
+			$this->cardGameplay = new CardGameplay($this->oracleCard);
+			$this->cardGameplay->setParent($this);
+		}
+
+		return $this->cardGameplay;
+	}
+
+	/**
+	 * Get card faces.
+	 *
+	 * @return CardFace[]
+	 */
+	public function getCardFaces(): array {
+		return $this->getCardGameplay()->getCardFaces();
 	}
 
 }

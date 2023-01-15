@@ -3,6 +3,7 @@
 namespace Archidekt\Model\Archidekt;
 
 use Archidekt\Model\ApiObjectBase;
+use Archidekt\Model\Archidekt\CardDeckMeta;
 
 /**
  * @property int $id Deck Id.
@@ -25,7 +26,7 @@ use Archidekt\Model\ApiObjectBase;
 class Deck extends ApiObjectBase {
 
 	/**
-	 * @var CardWrapper[]
+	 * @var CardDeckMeta[]
 	 */
 	private array $cardObjects = [];
 
@@ -110,12 +111,12 @@ class Deck extends ApiObjectBase {
 	/**
 	 * Get collection of cards in the deck.
 	 *
-	 * @return CardWrapper[]
+	 * @return CardDeckMeta[]
 	 */
 	public function getCards(): array {
 		if (empty($this->cardObjects)) {
 			$this->cardObjects = array_map(function($card) {
-				return new CardWrapper($card);
+				return new CardDeckMeta($card);
 			}, $this->data['cards'] ?? []);
 		}
 
@@ -140,7 +141,7 @@ class Deck extends ApiObjectBase {
 	/**
 	 * Get all cards that are in categories that are themselves included in the deck.
 	 *
-	 * @return CardWrapper[]
+	 * @return CardDeckMeta[]
 	 */
 	public function getCardsInDeck(): array {
 		$categories = array_filter($this->getCategories(), function (Category $category) {
@@ -153,7 +154,7 @@ class Deck extends ApiObjectBase {
 	/**
 	 * Get all the cards that are in categories that are themselves included in the price.
 	 *
-	 * @return CardWrapper[]
+	 * @return CardDeckMeta[]
 	 */
 	public function getCardsInPrice(): array {
 		$categories = array_filter($this->getCategories(), function (Category $category) {
@@ -169,8 +170,8 @@ class Deck extends ApiObjectBase {
 	 * @return string
 	 */
 	public function getDeckPrice(string $source = 'tcg'): string {
-		$price = array_reduce($this->getCardsInPrice(), function($carry, CardWrapper $card_wrapper) use ($source) {
-			return $carry + $card_wrapper->getCard()->getPrice($source);
+		$price = array_reduce($this->getCardsInPrice(), function($carry, CardDeckMeta $card_wrapper) use ($source) {
+			return $carry + $card_wrapper->getCardPrinting()->getPrice($source);
 		}, 0);
 
 		return number_format($price, 2);
@@ -180,8 +181,8 @@ class Deck extends ApiObjectBase {
 	 * @return string
 	 */
 	public function getSaltSum(): string {
-		$salt = array_reduce($this->getCardsInDeck(), function($carry, CardWrapper $card_wrapper) {
-			return $carry + $card_wrapper->getCard()->getOracleCard()->salt;
+		$salt = array_reduce($this->getCardsInDeck(), function($carry, CardDeckMeta $card_wrapper) {
+			return $carry + $card_wrapper->getCardPrinting()->getCardGameplay()->salt;
 		}, 0);
 
 		return number_format($salt, 2);
@@ -190,13 +191,13 @@ class Deck extends ApiObjectBase {
 	/**
 	 * Filter the given list of cards by cards that are only in the given list of categories.
 	 *
-	 * @param CardWrapper[] $cards
+	 * @param CardDeckMeta[] $cards
 	 * @param Category[] $categories
 	 *
-	 * @return CardWrapper[]
+	 * @return CardDeckMeta[]
 	 */
 	private function filterCardsInCategories(array $cards, array $categories): array {
-		return array_filter($cards, function(CardWrapper $card_wrapper) use ($categories) {
+		return array_filter($cards, function(CardDeckMeta $card_wrapper) use ($categories) {
 			foreach ($categories as $category) {
 				if (in_array($category->name, $card_wrapper->categories)) {
 					return TRUE;
