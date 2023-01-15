@@ -143,7 +143,7 @@ class Deck extends ApiObjectBase {
 				return new Category($card);
 			}, $this->data['categories'] ?? []);
 
-			// Sort alphabetically by default.
+			// Sort Premier to top, and alphabetically by default.
 			usort($this->categoryObjects, function($a, $b) {
 				/**
 				 * @var $a Category
@@ -168,7 +168,7 @@ class Deck extends ApiObjectBase {
 	 *
 	 * @return Category[]
 	 */
-	public function getCategoriesWithCards(): array {
+	public function getCategoriesWithCards(bool $include_empty = false): array {
 		$categories = $this->getCategories();
 		$cards = $this->getCards();
 
@@ -180,6 +180,10 @@ class Deck extends ApiObjectBase {
 				}
 			}
 			$category->setCards($category_cards);
+		}
+
+		if (!$include_empty) {
+			$categories = array_filter($categories, fn($category) => $category->hasCards());
 		}
 
 		return $categories;
