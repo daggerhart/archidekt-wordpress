@@ -69,9 +69,9 @@ class Deck {
 		$deck = $this->client->getDeck($attributes['id']);
 		$suggestions = [
 			// Default to the summary if the given mode doesn't exist.
-			'deck/deck--summary',
+			'deck' . DIRECTORY_SEPARATOR . 'deck--summary',
 			// More specific suggestions later in the array.
-			'deck/deck--' . $attributes['mode'],
+			'deck' . DIRECTORY_SEPARATOR . 'deck--' . $attributes['mode'],
 		];
 
 		return $this->template->render($suggestions, [
