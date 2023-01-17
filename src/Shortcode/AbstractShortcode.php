@@ -2,6 +2,7 @@
 
 namespace Archidekt\Shortcode;
 
+use Archidekt\Model\Archidekt\Category;
 use Archidekt\Service\ApiClient;
 use Archidekt\Service\Template;
 use Archidekt\ServicesContainer;
@@ -67,6 +68,25 @@ abstract class AbstractShortcode {
 	 * @return string
 	 */
 	abstract public function shortcode(array $attributes, string $content = ''): string;
+
+	/**
+	 * @param Category $category
+	 * @param array $context
+	 *
+	 * @return string
+	 */
+	public function renderCategoryCards(Category $category, array $context = []): string {
+		$cards = [];
+		foreach ($category->getCards() as $card_deck_meta) {
+			$cards[] = $this->template->render('card/card--hover-image', [
+				'card_deck_meta' => $card_deck_meta
+			]);
+		}
+		return $this->template->render('deck/deck-category', $context + [
+			'category' => $category,
+			'linked_cards' => $cards,
+		]);
+	}
 
 	/**
 	 * Clean up multiline shortcode content.

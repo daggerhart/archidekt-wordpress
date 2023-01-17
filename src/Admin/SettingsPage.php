@@ -2,7 +2,9 @@
 
 namespace Archidekt\Admin;
 
+use Archidekt\Model\Archidekt\CardFace;
 use Archidekt\Model\Settings;
+use Archidekt\Service\ApiClient;
 use Archidekt\Service\Cache;
 use Archidekt\Service\Messenger;
 use Archidekt\Service\Template;
@@ -36,16 +38,23 @@ class SettingsPage {
 	private Messenger $messenger;
 
 	/**
+	 * @var ApiClient
+	 */
+	private ApiClient $client;
+
+	/**
 	 * @param Settings $settings
 	 * @param Template $template
 	 * @param Cache $cache
 	 * @param Messenger $messenger
+	 * @param ApiClient $client
 	 */
-	public function __construct(Settings $settings, Template $template, Cache $cache, Messenger $messenger) {
+	public function __construct(Settings $settings, Template $template, Cache $cache, Messenger $messenger, ApiClient $client) {
 		$this->settings = $settings;
 		$this->template = $template;
 		$this->cache = $cache;
 		$this->messenger = $messenger;
+		$this->client = $client;
 	}
 
 	/**
@@ -61,7 +70,8 @@ class SettingsPage {
 			$container->get('settings'),
 			$container->get('template'),
 			$container->get('cache'),
-			$container->get('messenger')
+			$container->get('messenger'),
+			$container->get('api_client')
 		);
 		add_action('admin_init', [$static, 'adminInit']);
 		add_action('admin_menu', [$static, 'adminMenu']);
@@ -183,6 +193,10 @@ class SettingsPage {
 			</form>
 		</div>
 		<?php
+
+		if (isset($_GET['debug'])) {
+			$this->debugApiObjects();
+		}
 	}
 
 	/**
@@ -237,6 +251,21 @@ class SettingsPage {
 		$this->messenger->addMessage("Cache cleared for deck ids: " . implode(', ', $deck_ids));
 		wp_safe_redirect(admin_url('options-general.php?page=archidekt&cache-cleared=1'));
 		exit;
+	}
+
+	/**
+	 * @return void
+	 */
+	private function debugApiObjects() {
+		// 3585114 = Kumena - Merfolk.
+		$deck = $this->client->getDeck(3585114);
+		$card_deck_meta = $deck->getCards()[0];
+		dump('CardDeckMeta', $card_deck_meta->getRawData());
+		dump('CardPrinting', $card_deck_meta->getCardPrinting()->getRawData());
+		dump('CardGameplay', $card_deck_meta->getCardGameplay()->getRawData());
+		dump('CardFace(s)', array_map(function(CardFace $card_face) {
+			return $card_face->getRawData();
+		}, $card_deck_meta->getCardFaces()));
 	}
 
 }

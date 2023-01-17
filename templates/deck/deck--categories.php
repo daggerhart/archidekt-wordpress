@@ -3,6 +3,7 @@
  * @var \Archidekt\Model\Archidekt\Deck $deck
  * @var int|string $deck_id
  * @var string $view_mode
+ * @var array $categories_with_linked_cards
  */
 ?>
 <div class="archidekt-deck mode-<?= esc_attr($view_mode) ?>">
@@ -22,15 +23,8 @@
 		</div>
 	</div>
 	<div class="deck-categories">
-		<?php foreach ($deck->getCategoriesWithCards() as $category) { ?>
-			<div class="archidekt-category">
-				<div class="category-name"><?= $category->name ?></div>
-				<ul class="category-cards">
-					<?php foreach ($category->getCards() as $card) { ?>
-						<li><?= $card->getCardGameplay()->name ?></li>
-					<?php } ?>
-				</ul>
-			</div>
+		<?php foreach ($categories_with_linked_cards as $category_with_cards) { ?>
+			<?= $category_with_cards ?>
 		<?php } ?>
 	</div>
 </div>

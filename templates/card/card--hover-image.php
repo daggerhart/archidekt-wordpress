@@ -4,8 +4,8 @@
  */
 ?>
 <span class="archidekt-hover-image">
-	<span class="card-name"><?= $card_deck_meta->getCardGameplay()->name ?></span>
+	<a class="card-name" href="<?= esc_attr($card_deck_meta->getCardPrinting()->scryfall_uri) ?>" target="_blank"><?= $card_deck_meta->getCardGameplay()->name ?></a>
 	<span class="card-image">
-		<img src="<?= $card_deck_meta->getCardPrinting()->getScryfallImageUri() ?>" alt="<?= $card_deck_meta->label ?>">
+		<img src="<?= esc_attr($card_deck_meta->getCardPrinting()->getScryfallImageUri()) ?>" alt="<?= esc_attr($card_deck_meta->getCardGameplay()->name) ?>">
 	</span>
 </span>

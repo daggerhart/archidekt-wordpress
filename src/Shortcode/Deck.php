@@ -35,6 +35,12 @@ class Deck extends AbstractShortcode {
 			return $this->errorComment("Deck not found: {$attributes['id']}");
 		}
 
+		// Render categories.
+		$categories_with_linked_cards = [];
+		foreach ($deck->getCategoriesWithCards() as $category) {
+			$categories_with_linked_cards[] = $this->renderCategoryCards($category);
+		}
+
 		wp_enqueue_style('archidekt-shortcode-deck');
 		$suggestions = [
 			// Default to the summary if the given mode doesn't exist.
@@ -47,6 +53,7 @@ class Deck extends AbstractShortcode {
 			'deck' => $deck,
 			'deck_id' => $attributes['id'],
 			'view_mode' => $attributes['mode'],
+			'categories_with_linked_cards' => $categories_with_linked_cards,
 		]);
 	}
 

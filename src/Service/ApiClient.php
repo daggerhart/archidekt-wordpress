@@ -54,7 +54,7 @@ class ApiClient {
 		// Attempt to decode and cache the response data.
 		$data = \json_decode($response['body'], true);
 		if ($data) {
-			$data = $this->setCardPrintingScryfallImages($data);
+			$data = $this->setCardPrintingScryfallData($data);
 			$this->cache->setCache($cache_id, $data);
 		}
 
@@ -68,7 +68,7 @@ class ApiClient {
 	 *
 	 * @return array
 	 */
-	protected function setCardPrintingScryfallImages(array $archidekt_deck_data): array {
+	protected function setCardPrintingScryfallData(array $archidekt_deck_data): array {
 		$identifiers = array_map(function(array $card_deck_meta_data) {
 			return [
 				'id' => $card_deck_meta_data['card']['uid'],
@@ -80,6 +80,7 @@ class ApiClient {
 				if ($card_deck_meta_data['card']['uid'] == $scryfall_card['id']) {
 					$archidekt_deck_data['cards'][$index]['card']['scryfall_image_uris'] = $scryfall_card['image_uris'] ?? [];
 					$archidekt_deck_data['cards'][$index]['card']['scryfall_image_status'] = $scryfall_card['image_status'];
+					$archidekt_deck_data['cards'][$index]['card']['scryfall_uri'] = $scryfall_card['scryfall_uri'];
 				}
 			}
 		}

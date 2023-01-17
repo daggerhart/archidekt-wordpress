@@ -42,14 +42,9 @@ class DeckCategory extends AbstractShortcode {
 		}
 
 		wp_enqueue_style('archidekt-shortcode-deck');
-		$suggestions = [
-			'deck' . DIRECTORY_SEPARATOR . 'deck-category',
-		];
-
-		return $this->template->render($suggestions, [
+		return $this->renderCategoryCards($category, [
 			'deck' => $deck,
 			'deck_id' => $attributes['id'],
-			'category' => $category,
 			'content' => $this->cleanShortcodeContent($content),
 		]);
 	}
