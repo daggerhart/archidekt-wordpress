@@ -82,6 +82,23 @@ class Template {
 	}
 
 	/**
+	 * Render a template in this plugin. Don't look for a template override in the theme.
+	 *
+	 * @param string $template_name
+	 * @param array $context
+	 *
+	 * @return false|string
+	 */
+	public function renderPluginTemplate(string $template_name, array $context) {
+		$file = $this->folder . DIRECTORY_SEPARATOR . $template_name . '.php';
+		if (file_exists($file)) {
+			return $this->renderTemplate($file, $context);
+		}
+
+		return "<!-- Template not found: {$file} -->";
+	}
+
+	/**
 	 * Render in a clean context.
 	 *
 	 * @param string $found_template_file

@@ -173,7 +173,7 @@ class SettingsPage {
 	 * @return void
 	 */
 	public function renderCheckbox(array $field = []) {
-		print $this->template->render('form/checkbox', [
+		print $this->template->renderPluginTemplate('form/checkbox', [
 			'field' => $field,
 		]);
 	}
@@ -186,7 +186,7 @@ class SettingsPage {
 	 * @return void
 	 */
 	public function renderSelect(array $field = []) {
-		print $this->template->render('form/select', [
+		print $this->template->renderPluginTemplate('form/select', [
 			'field' => $field,
 		]);
 	}

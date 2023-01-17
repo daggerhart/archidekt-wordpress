@@ -36,6 +36,13 @@ class Deck extends ApiObjectBase {
 	private array $categoryObjects = [];
 
 	/**
+	 * Whether the categoryObjects are populated with cards.
+	 *
+	 * @var bool
+	 */
+	private bool $categoriesPopulated = false;
+
+	/**
 	 * Hard coded in the order expected.
 	 * @todo - Can this be dynamic?
 	 */
@@ -169,6 +176,15 @@ class Deck extends ApiObjectBase {
 	 * @return Category[]
 	 */
 	public function getCategoriesWithCards(bool $include_empty = false): array {
+		// Look to the cache first.
+		if (!empty($this->categoryObjects) && $this->categoriesPopulated) {
+			if (!$include_empty) {
+				return array_filter($this->categoryObjects, fn($category) => $category->hasCards());
+			}
+
+			return $this->categoryObjects;
+		}
+
 		$categories = $this->getCategories();
 		$cards = $this->getCards();
 
@@ -182,11 +198,33 @@ class Deck extends ApiObjectBase {
 			$category->setCards($category_cards);
 		}
 
+		$this->categoryObjects = $categories;
+		$this->categoriesPopulated = true;
+
 		if (!$include_empty) {
-			$categories = array_filter($categories, fn($category) => $category->hasCards());
+			return array_filter($this->categoryObjects, fn($category) => $category->hasCards());
 		}
 
-		return $categories;
+		return $this->categoryObjects;
+	}
+
+	/**
+	 * Get a populated category by name.
+	 *
+	 * @param string $category_name
+	 *
+	 * @return Category|false
+	 */
+	public function getCategoryWithCards(string $category_name) {
+		$found = array_filter($this->getCategoriesWithCards(), function(Category $category) use ($category_name) {
+			return strtolower($category->name) == strtolower($category_name);
+		});
+
+		if (!empty($found)) {
+			return reset($found);
+		}
+
+		return FALSE;
 	}
 
 	/**

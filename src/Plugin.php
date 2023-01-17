@@ -7,6 +7,7 @@ use Archidekt\Model\Settings;
 use Archidekt\Service\ApiClient;
 use Archidekt\Service\Template;
 use Archidekt\Shortcode\Deck;
+use Archidekt\Shortcode\DeckCategory;
 
 class Plugin {
 
@@ -82,6 +83,7 @@ class Plugin {
 	public function init() {
 		SettingsPage::register(static::container());
 		Deck::register(static::container());
+		DeckCategory::register(static::container());
 	}
 
 }

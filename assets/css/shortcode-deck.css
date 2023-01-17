@@ -1,5 +1,7 @@
-
-.archidekt-deck {
+/*
+ * `deck` shortcode.
+ */
+.archidekt-deck .summary {
 	display: flex;
 	border: 1px solid #bbb;
 	padding: 6px;
@@ -17,4 +19,12 @@
 .archidekt-deck .details .name {
 	line-height: 1;
 	font-size: 1.5rem;
+}
+
+/*
+ * `deck-category` shortcode.
+ */
+.archidekt-deck-category .archidekt-category {
+	display: flex;
+	justify-content: space-between;
 }
