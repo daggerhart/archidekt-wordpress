@@ -27,6 +27,7 @@ use Archidekt\Model\ApiObjectBase;
  * @property array $prices
  * @property string $rarity
  * @property array $scryfall_image_uris Image uris for card on scryfall.
+ * @property string $scryfall_image_status Image status for card on scryfall.
  */
 class CardPrinting extends ApiObjectBase {
 

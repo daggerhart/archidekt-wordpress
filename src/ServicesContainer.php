@@ -51,7 +51,7 @@ class ServicesContainer {
 	 */
 	private function resolveService(string $name) {
 		if (!isset($this->registered[$name])) {
-			throw new \Exception("Service not registered.");
+			throw new \Exception("Service {$name} not registered.");
 		}
 
 		if (is_callable($this->registered[$name])) {
@@ -64,6 +64,6 @@ class ServicesContainer {
 			return $this->resolved[$name];
 		}
 
-		throw new \Exception("Service unresolveable.");
+		throw new \Exception("Service {$name} unresolveable.");
 	}
 }

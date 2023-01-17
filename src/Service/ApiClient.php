@@ -2,37 +2,25 @@
 
 namespace Archidekt\Service;
 
-use Archidekt\Model\Archidekt\CardDeckMeta;
 use Archidekt\Model\Archidekt\Deck;
 
 /**
- * Fetch remote Archidekt data.
+ * Fetch remote Archidekt & Scryfall data.
  */
 class ApiClient {
 
 	/**
-	 * Whether to cache.
+	 * Cache service.
 	 *
-	 * @var bool
+	 * @var Cache
 	 */
-	private bool $cacheEnabled;
+	protected Cache $cache;
 
 	/**
-	 * How long the cache should last in seconds.
-	 *
-	 * @var int|float
+	 * @param Cache $cache
 	 */
-	private int $cacheLifetime;
-
-	/**
-	 * Constructor.
-	 *
-	 * @param bool $cache_enabled
-	 * @param int $cache_lifetime
-	 */
-	public function __construct(bool $cache_enabled = TRUE, int $cache_lifetime = DAY_IN_SECONDS) {
-		$this->cacheEnabled = $cache_enabled;
-		$this->cacheLifetime = $cache_lifetime;
+	public function __construct(Cache $cache) {
+		$this->cache = $cache;
 	}
 
 	/**
@@ -43,8 +31,8 @@ class ApiClient {
 	 * @return \Archidekt\Model\Archidekt\Deck
 	 */
 	public function getDeck(int $deck_id): ?Deck {
-		$cache_id = "archidekt/{$deck_id}";
-		if ($cache = $this->getCache($cache_id)) {
+		$cache_id = "deck/{$deck_id}";
+		if ($cache = $this->cache->getCache($cache_id)) {
 			return new Deck($cache);
 		}
 
@@ -67,7 +55,7 @@ class ApiClient {
 		$data = \json_decode($response['body'], true);
 		if ($data) {
 			$data = $this->setCardPrintingScryfallImages($data);
-			$this->setCache($cache_id, $data);
+			$this->cache->setCache($cache_id, $data);
 		}
 
 		return new Deck($data);
@@ -89,8 +77,9 @@ class ApiClient {
 
 		foreach ($this->getScryfallCards($identifiers) as $scryfall_card) {
 			foreach ($archidekt_deck_data['cards'] ?? [] as $index => $card_deck_meta_data) {
-				if ($card_deck_meta_data['uid'] == $scryfall_card['id']) {
-					$archidekt_deck_data['cards'][$index]['scryfall_image_uris'] = $scryfall_card['image_uris'];
+				if ($card_deck_meta_data['card']['uid'] == $scryfall_card['id']) {
+					$archidekt_deck_data['cards'][$index]['card']['scryfall_image_uris'] = $scryfall_card['image_uris'] ?? [];
+					$archidekt_deck_data['cards'][$index]['card']['scryfall_image_status'] = $scryfall_card['image_status'];
 				}
 			}
 		}
@@ -119,37 +108,6 @@ class ApiClient {
 		}
 
 		return [];
-	}
-
-	/**
-	 * Look up data for cached version.
-	 *
-	 * @param string $cache_id
-	 *
-	 * @return false|array
-	 */
-	private function getCache(string $cache_id) {
-		if (!$this->cacheEnabled) {
-			return FALSE;
-		}
-
-		return \get_transient($cache_id);
-	}
-
-	/**
-	 * Cache data as a transient.
-	 *
-	 * @param string $cache_id
-	 * @param array $cache_data
-	 *
-	 * @return bool
-	 */
-	private function setCache(string $cache_id, array $cache_data): bool {
-		if (!$this->cacheEnabled) {
-			return FALSE;
-		}
-
-		return \set_transient($cache_id, $cache_data, $this->cacheLifetime);
 	}
 
 }

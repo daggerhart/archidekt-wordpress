@@ -5,6 +5,8 @@ namespace Archidekt;
 use Archidekt\Admin\SettingsPage;
 use Archidekt\Model\Settings;
 use Archidekt\Service\ApiClient;
+use Archidekt\Service\Cache;
+use Archidekt\Service\Messenger;
 use Archidekt\Service\Template;
 use Archidekt\Shortcode\Deck;
 use Archidekt\Shortcode\DeckCategory;
@@ -19,10 +21,16 @@ class Plugin {
 		$container->add('settings', function() {
 			return Settings::instance();
 		});
-		$container->add('api_client', function(ServicesContainer $container) {
+		$container->add('cache', function(ServicesContainer $container) {
 			/** @var Settings $settings */
 			$settings = $container->get('settings');
-			return new ApiClient($settings->cacheEnabled(), $settings->cacheLifetime());
+			return new Cache($settings->cacheEnabled(), $settings->cacheLifetime());
+		});
+		$container->add('messenger', function(ServicesContainer $container) {
+			return new Messenger($container->get('cache'));
+		});
+		$container->add('api_client', function(ServicesContainer $container) {
+			return new ApiClient($container->get('cache'));
 		});
 		$container->add('template', function() {
 			return new Template(ARCHIDEKT_TEMPLATES_DIR);
