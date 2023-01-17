@@ -30,4 +30,10 @@ abstract class ApiObjectBase {
 		return $this->data[$name] ?? NULL;
 	}
 
+	/**
+	 * @return array
+	 */
+	public function getRawData(): array {
+		return $this->data;
+	}
 }

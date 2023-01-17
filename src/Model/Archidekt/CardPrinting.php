@@ -26,8 +26,19 @@ use Archidekt\Model\ApiObjectBase;
  * @property int $owned
  * @property array $prices
  * @property string $rarity
+ * @property array $scryfall_image_uris Image uris for card on scryfall.
  */
 class CardPrinting extends ApiObjectBase {
+
+	// https://scryfall.com/docs/api/images
+	const IMAGE_STYLES = [
+		'png',
+		'border_crop',
+		'art_crop',
+		'large',
+		'normal',
+		'small',
+	];
 
 	/**
 	 * Parent deck meta object.
@@ -104,6 +115,19 @@ class CardPrinting extends ApiObjectBase {
 	 */
 	public function getCardFaces(): array {
 		return $this->getCardGameplay()->getCardFaces();
+	}
+
+	/**
+	 * @param string $style
+	 *
+	 * @return string
+	 */
+	public function getScryfallImageUri(string $style = 'small'): string {
+		if (!in_array($style, static::IMAGE_STYLES)) {
+			$style = 'small';
+		}
+
+		return $this->scryfall_image_uris[$style];
 	}
 
 }

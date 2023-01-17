@@ -48,4 +48,11 @@ class CardDeckMeta extends ApiObjectBase {
 		return $this->getCardPrinting()->getCardGameplay();
 	}
 
+	/**
+	 * @return array
+	 */
+	public function getCardFaces(): array {
+		return $this->getCardPrinting()->getCardGameplay()->getCardFaces();
+	}
+
 }
